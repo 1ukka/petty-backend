@@ -32,10 +32,9 @@ class profile(Entity):
 class Product(Entity):
     name = models.CharField('name', max_length=255)
     description = models.TextField('description', null=True, blank=True)
-    height = models.FloatField('height', null=True, blank=True)
     qty = models.IntegerField('qty', null=True, blank=True)
     cost = models.IntegerField('cost', null=True, blank=True)
-    price = models.IntegerField('price')  
+    price = models.IntegerField('price')
     discounted_price = models.IntegerField('discounted price', null=True, blank=True)
     category = models.ForeignKey('ecommerce.Category', verbose_name='category', related_name='products',null=True,blank=True,on_delete=models.SET_NULL)
     is_featured = models.BooleanField('is featured')
