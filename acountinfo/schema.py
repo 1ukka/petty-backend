@@ -1,13 +1,36 @@
-# from ninja import Schema
+from ninja import Schema
 
-# class loginSchema(Schema):
-#     email: str
-#     password: str
+from pydantic import EmailStr
 
-# class signupSchema(Schema):
-#     name: str
-#     email: str
-#     password: str
-    
-# class logoutSchema(Schema):
-#     email: str
+
+
+
+
+class AccountInfoSchema(Schema):
+    email: EmailStr
+    password: str
+    first_name: str
+    phone: str
+    address: str
+
+class LoginSchema(Schema):
+    email: EmailStr
+    password: str
+
+class AccountSignUpSchema(Schema):
+    email: EmailStr
+    password: str
+    first_name: str
+    phone: str
+    address: str
+
+class UpdateAccountInfoSchema(Schema):
+    email: EmailStr
+    password: str
+    first_name: str
+    phone: str
+    address: str
+
+class ChangePasswordSchema(Schema):
+    old_password: str
+    new_password: str

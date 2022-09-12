@@ -2,6 +2,7 @@ from collections import UserDict
 import uuid
 from django.db import models
 from django.contrib.auth import get_user_model
+from PIL import Image
 
 
 User = get_user_model()
@@ -44,6 +45,10 @@ class Product(Entity):
     def __str__(self):
         return self.name
 
+    @property
+    def images(self):
+        return self.images.all()
+
 class Category(Entity):
     parent = models.ForeignKey('self', verbose_name='parent', related_name='children',null=True,
                             blank=True,
@@ -81,8 +86,7 @@ class Order(Entity):
 
 class Item(Entity):
     user = models.ForeignKey(User, verbose_name='user', related_name='items', on_delete=models.CASCADE)
-    product = models.ForeignKey('ecommerce.Product', verbose_name='product',
-                                on_delete=models.CASCADE)
+    product = models.ForeignKey('ecommerce.Product', verbose_name='product',on_delete=models.CASCADE)
     item_qty = models.IntegerField('item_qty')
     ordered = models.BooleanField('ordered')
 
@@ -109,6 +113,7 @@ class OrderStatus(Entity):
         return self.title
 
 class Article(Entity):
+
     title = models.CharField('title', max_length=255)
     description = models.TextField('description')
     image = models.ImageField('image', upload_to='article/')
@@ -116,16 +121,25 @@ class Article(Entity):
 
     def __str__(self):
         return self.title
-    
-class Cart(Entity):
 
-    user = models.ForeignKey(User, verbose_name='user', related_name='cart', on_delete=models.CASCADE)
-    product = models.ForeignKey('ecommerce.Product', verbose_name='product',on_delete=models.CASCADE)
-    item_qty = models.IntegerField('item_qty')
-    ordered = models.BooleanField('ordered')
-    phone_number=models.CharField('phone_number', max_length=255)
-    adress=models.CharField('adress', max_length=255)
+class Images(Entity):
+    image = models.ImageField('image', upload_to='product/')
+    is_default_image = models.BooleanField('is default image')
+    product = models.ForeignKey(Product, verbose_name='product', related_name='images', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.product.name} quantity: {self.item_qty}'
+        return self.image.name
 
+    class Meta:
+        verbose_name = 'image'
+        verbose_name_plural = 'images'
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.image.path)
+        if img.height > 500 or img.width > 500:
+            output_size = (500, 500)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
