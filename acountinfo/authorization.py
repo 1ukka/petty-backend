@@ -7,8 +7,6 @@ from acountinfo import settings
 User = get_user_model()
 
 
-
-
 class AuthBearer(HttpBearer):
     def authenticate(self, request, token):
         try:

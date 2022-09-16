@@ -1,19 +1,20 @@
 from django.contrib import admin
-from petappbackend.ecommerce.models import *
 from nested_inline.admin import NestedModelAdmin
+from mptt.admin import DraggableMPTTAdmin
 
-admin.site.register(profile)
-admin.site.register(Product)
-admin.site.register(Category)
+from ecommerce.models import Profile, Product, Category, Order, OrderStatus, Item, Article, Images
+
 admin.site.register(Order)
 admin.site.register(Item)
 admin.site.register(OrderStatus)
 admin.site.register(Article)
 
+
 class ProductImage(admin.TabularInline):
     model = Images
     inlines = []
     extra = 1
+
 
 @admin.register(Product)
 class ProductAdmin(NestedModelAdmin):
@@ -22,4 +23,18 @@ class ProductAdmin(NestedModelAdmin):
     list_display = ['name', 'price', 'category', 'is_active', 'qty']
     list_filter = ['is_active', 'category']
     search_fields = ['name', 'price', 'category']
+    list_per_page = 20
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['name', 'image', 'is_active']
+    list_filter = ['is_active']
+    search_fields = ['name']
+    list_per_page = 20
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ['name', 'phone_number', 'address']
     list_per_page = 20
