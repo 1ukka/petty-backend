@@ -42,10 +42,6 @@ class OrderStatusSchema(Schema):
     description: str
 
 
-class CategoryUpdateSchema(CategorySchema):
-    pass
-
-
 class UserLoginSchema(Schema):
     username: str
     password: str
