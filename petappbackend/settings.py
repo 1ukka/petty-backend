@@ -126,3 +126,5 @@ JAZZMIN_SETTINGS = {
     "theme": "flatly",
     "dark_mode_theme": "darkly",
 }
+
+ACCESS_TOKEN_EXPIRE_MINUTES = 30

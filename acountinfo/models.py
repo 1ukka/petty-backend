@@ -4,10 +4,10 @@ from django.contrib.auth.models import AbstractUser, UserManager
 
 class EmailAccountManager(UserManager):
     def get_by_natural_key(self, username):
-        case_insensitive_username_field = '{}__iexact'.format(self.model.USERNAME_FIELD)
+        case_insensitive_username_field = '{}iexact'.format(self.model.USERNAME_FIELD)
         return self.get(**{case_insensitive_username_field: username})
 
-    def create_user(self, first_name, last_name, email, password=None):
+    def create_user(self, first_name, last_name, email, phone_number, password=None):
         if not email:
             raise ValueError('user must have an email to register')
 
@@ -17,6 +17,7 @@ class EmailAccountManager(UserManager):
         user.set_password(password)
         user.first_name = first_name
         user.last_name = last_name
+        user.phone_number = phone_number
         user.save(using=self._db)
         return user
 
@@ -41,5 +42,12 @@ class EmailAccount(AbstractUser, models.Model):
     REQUIRED_FIELDS = []
     objects = EmailAccountManager()
 
-    def __str__(self):
+    def __str(self):
         return self.email
+
+    def update_password(self, old_password, new_password):
+        if self.check_password(old_password):
+            self.set_password(new_password)
+            self.save()
+            return True
+        return False

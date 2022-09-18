@@ -1,6 +1,4 @@
 from django.contrib import admin
-from nested_inline.admin import NestedModelAdmin
-from mptt.admin import DraggableMPTTAdmin
 
 from ecommerce.models import Profile, Product, Category, Order, OrderStatus, Item, Article, Images
 
@@ -16,15 +14,16 @@ class ProductImage(admin.TabularInline):
     extra = 1
 
 
-@admin.register(Product)
-class ProductAdmin(NestedModelAdmin):
-    inlines = [ProductImage]
+# @admin.register(Product)
+# class ProductAdmin(NestedModelAdmin):
+#     inlines = [ProductImage]
 
-    list_display = ['name', 'price', 'category', 'is_active', 'qty']
-    list_filter = ['is_active', 'category']
-    search_fields = ['name', 'price', 'category']
-    list_per_page = 20
+#     list_display = ['name', 'price', 'category', 'is_active', 'qty']
+#     list_filter = ['is_active', 'category']
+#     search_fields = ['name', 'price', 'category']
+#     list_per_page = 20
 
+admin.site.register(Product)
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
