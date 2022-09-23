@@ -8,6 +8,9 @@ admin.site.register(OrderStatus)
 admin.site.register(Article)
 
 
+
+
+
 class ProductImage(admin.TabularInline):
     model = Images
     inlines = []

@@ -16,11 +16,23 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from ninja import NinjaAPI
-from acountinfo.controllers import account_controller
+from acountinfo.controllers import auth_controller
+from ecommerce.controllers.cart import cart_controller
+from ecommerce.controllers.order import order_controller
+from ecommerce.controllers.others import category_controller, product_image_controller, item_controller, article_controller
+from ecommerce.controllers.product import product_controller
 
 api = NinjaAPI()
+api.add_router('/auth', auth_controller)
+api.add_router('/products', product_controller)
+api.add_router('/carts', cart_controller)
+api.add_router('/orders', order_controller)
+api.add_router('/categories', category_controller)
+api.add_router('/product-images', product_image_controller)
+api.add_router('/items', item_controller)
+api.add_router('/articles', article_controller)
 
-api.add_router('account', account_controller)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', api.urls),

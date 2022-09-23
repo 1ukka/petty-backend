@@ -34,7 +34,7 @@ class Product(Entity):
     qty = models.IntegerField('qty', null=True, blank=True)
     price = models.IntegerField('price')
     cost = models.IntegerField('cost', null=True, blank=True)
-    discounted_price = models.IntegerField('discounted price', null=True, blank=True)
+    price_discounted = models.IntegerField('discounted price', null=True, blank=True)
     category = models.ForeignKey('ecommerce.Category', verbose_name='category', related_name='products', null=True,
                                  blank=True, on_delete=models.SET_NULL)
     is_featured = models.BooleanField('is featured')
@@ -47,13 +47,20 @@ class Product(Entity):
     def images(self):
         return self.images.all()
 
+    @property
+    def price_with_discount(self):
+        if self.price_discounted:
+            p = self.price_discounted/100
+            return self.price - p
+        return self.price
+
 
 class Category(Entity):
     parent = models.ForeignKey('self', verbose_name='parent', related_name='children', null=True,
                                blank=True,
                                on_delete=models.CASCADE)
     name = models.CharField('name', max_length=255)
-    description = models.TextField('description')
+    description = models.TextField('description', null=True, blank=True)
     image = models.ImageField('image', upload_to='category/', null=True, blank=True)
     is_active = models.BooleanField('is active')
 
@@ -74,21 +81,21 @@ class Order(Entity):
     created = models.DateTimeField(editable=False, auto_now_add=True)
     updated = models.DateTimeField(editable=False, auto_now=True)
 
-    def __str__(self):
-        return f'{self.user} {self.order_total}'
-
     @property
     def order_total(self):
         order_total = sum(
-            i.product.price_discounted * i.item_qty for i in self.items.all()
+            i.product.price_with_discount * i.item_qty for i in self.items.all()
         )
 
         return order_total
 
+    def __str__(self):
+        return f'{self.user}  total={self.order_total}'
+
 
 class Item(Entity):
     user = models.ForeignKey(User, verbose_name='user', related_name='items', on_delete=models.CASCADE)
-    product = models.ForeignKey('ecommerce.Product', verbose_name='product', on_delete=models.CASCADE)
+    product = models.ForeignKey('ecommerce.Product', verbose_name='product', on_delete=models.CASCADE, related_name='items')
     item_qty = models.IntegerField('item_qty')
     ordered = models.BooleanField('ordered')
 
@@ -119,7 +126,7 @@ class OrderStatus(Entity):
 class Article(Entity):
     title = models.CharField('title', max_length=255)
     description = models.TextField('description')
-    image = models.ImageField('image', upload_to='article/')
+    image = models.ImageField('image', upload_to='article/', null=True, blank=True)
     is_active = models.BooleanField('is active')
 
     def __str__(self):

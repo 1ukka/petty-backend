@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-+_ok65d$la-sllev2vzfy04bk4_+@c93lw$h-v$i8z8^u3s9o4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -120,6 +120,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'acountinfo.EmailAccount'
+
 
 JAZZMIN_SETTINGS = {
     "site_title": "PETTY",
